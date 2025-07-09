@@ -1,22 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:ice_breaker_hub/items/game_items.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const IcebreakerApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class IcebreakerApp extends StatelessWidget {
+  const IcebreakerApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: '아이스브레이커 게임',
+      home: HomePage(),
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blueAccent),
-        useMaterial3: true,
+        pageTransitionsTheme: PageTransitionsTheme(
+          builders: {
+            for (final platform in TargetPlatform.values)
+              platform: const FadeUpwardsPageTransitionsBuilder(),
+          },
+        ),
       ),
-      home: const HomePage(),
       debugShowCheckedModeBanner: false,
     );
   }
@@ -25,62 +28,81 @@ class MyApp extends StatelessWidget {
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
+  static const double titleHeight = 100.0;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-      body: Center(
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 800),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          final double screenWidth = constraints.maxWidth;
+          final double screenHeight = constraints.maxHeight;
+
+          // 제목 제외한 높이
+          final double availableHeight = screenHeight - titleHeight;
+
+          // 정사각형 크기 = 가용 너비와 높이 중 작은 값
+          final double squareSize =
+              screenWidth < availableHeight ? screenWidth : availableHeight;
+
+          return Column(
             children: [
-              const SizedBox(height: 60),
-              const Text(
-                '아이스브레이커 게임 모음',
-                style: TextStyle(
-                  fontSize: 32,
-                  fontWeight: FontWeight.bold,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 40),
-              Wrap(
-                spacing: 20,
-                runSpacing: 20,
-                alignment: WrapAlignment.center,
-                children: List.generate(gameList.length, (index) {
-                  return ElevatedButton(
-                    onPressed: () {
-                      // 게임 페이지로 이동 등
-                    },
-                    style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 30, horizontal: 40),
-                      backgroundColor: Colors.blue.shade100,
-                      foregroundColor: Colors.black87,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
+              const SizedBox(
+                height: titleHeight,
+                child: Center(
+                  child: Text(
+                    '아이스브레이커 게임',
+                    style: TextStyle(
+                      fontSize: 32,
+                      fontWeight: FontWeight.bold,
                     ),
-                    child: Text(gameList[index]),
-                  );
-                }),
+                  ),
+                ),
               ),
-              const SizedBox(height: 80),
+
+              // 가운데 정사각형 영역
+              Expanded(
+                child: Center(
+                  child: SizedBox(
+                    width: squareSize,
+                    height: squareSize,
+                    child: GridView.count(
+                      crossAxisCount: 3,
+                      physics: const NeverScrollableScrollPhysics(),
+                      childAspectRatio: 1,
+                      padding: const EdgeInsets.all(8),
+                      mainAxisSpacing: 30,
+                      crossAxisSpacing: 30,
+                      children: gameItems.map((item) {
+                        return ElevatedButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (_) => item.page),
+                            );
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.blue.shade300,
+                            foregroundColor: Colors.white,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            padding: EdgeInsets.zero,
+                          ),
+                          child: Text(
+                            item.name,
+                            style: const TextStyle(fontSize: 18),
+                          ),
+                        );
+                      }).toList(),
+                    ),
+                  ),
+                ),
+              ),
             ],
-          ),
-        ),
+          );
+        },
       ),
     );
   }
 }
-
-final List<String> gameList = [
-  '빙고 게임',
-  '20문답',
-  '두 진실과 하나의 거짓',
-  '이름 릴레이',
-  '몸으로 말해요',
-  '공통점 찾기',
-];
