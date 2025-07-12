@@ -53,8 +53,9 @@ class HomePage extends StatelessWidget {
                   child: Text(
                     '아이스브레이커 게임',
                     style: TextStyle(
+                      fontFamily: 'Waguri',
                       fontSize: 32,
-                      fontWeight: FontWeight.bold,
+                      fontWeight: FontWeight.normal,
                     ),
                   ),
                 ),

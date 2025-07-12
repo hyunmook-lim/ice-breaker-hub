@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ice_breaker_hub/games/reading_glasses/reading_glasses_game_making_widget.dart';
 
 class ReadingGlassesPage extends StatelessWidget {
   const ReadingGlassesPage({
@@ -20,23 +21,15 @@ class ReadingGlassesPage extends StatelessWidget {
         title: Center(
           child: Text(
             title,
-            style: const TextStyle(fontWeight: FontWeight.bold),
+            style: const TextStyle(
+              fontFamily: 'Waguri',
+              fontWeight: FontWeight.normal,
+            ),
           ),
         ),
         actions: const [SizedBox(width: 48)], // leading과 symmetry 맞추기용
       ),
-      body: Expanded(
-        child: Center(
-          child: Container(
-            color: Colors.blue[100],
-            alignment: Alignment.center,
-            child: const Text(
-              '게임 뷰 영역',
-              style: TextStyle(fontSize: 18),
-            ),
-          ),
-        ),
-      ),
+      body: ReadingGlassesGameMakingWidget(),
     );
   }
 }
