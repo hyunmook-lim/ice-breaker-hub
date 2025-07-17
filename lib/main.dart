@@ -19,6 +19,7 @@ class IcebreakerApp extends StatelessWidget {
               platform: const FadeUpwardsPageTransitionsBuilder(),
           },
         ),
+        fontFamily: 'Waguri',
       ),
       debugShowCheckedModeBanner: false,
     );
